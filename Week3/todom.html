@@ -1,0 +1,103 @@
+<body>
+  <input type="text"></input>
+  <button onclick="addTodo()">Add todo!</button>
+
+  <button onclick="deleteLastTodo()">Delete last todo</button>
+
+  <button onclick="deleteFirstTodo()">Delete first todo</button>
+  <div id="todos"></div>
+  <script>
+    let todos = [];
+    
+    function addTodo() {
+      todos.push({
+        title: document.querySelector("input").value,
+      });
+
+      render()
+    }
+
+    function deleteLastTodo() {
+      todos.splice(todos.length - 1, 1) // remove the last element from the arr
+      render()
+    }
+
+
+    function deleteFirstTodo() {
+      todos.splice(0, 1) // remove the last element from the arr
+      render()
+    }
+
+
+    function deleteTodo(n){
+      todos.splice(n,1);
+      render();
+
+    }
+
+
+    function createTodoComponent(todo,n) {
+      const div = document.createElement("div");
+      const h1 = document.createElement("h1");
+      const button = document.createElement("button");
+      button.innerHTML = "Delete"
+      button.setAttribute("onclick","deleteTodo("+n+")");
+      h1.innerHTML = todo.title;
+      div.append(h1)
+      div.append(button)
+      return div
+    }
+
+    // react 
+    function render() {
+      document.querySelector("#todos").innerHTML = "";
+      for (let i = 0; i < todos.length; i++) {
+        const element = createTodoComponent(todos[i],i);
+        document.querySelector("#todos").appendChild(element)
+      }
+    }
+
+  </script>
+</body>
+
+<!-- Second Method  Here We Just Delete The Elment and Not Update THe Array. In First case we Update the Array Instead Of Deleteing Element,just Like how state and component work
+
+<body>
+<div id="todolist">
+</div>  <input type="text"></input>
+  <button onclick="addTodo()">Add todo!</button>
+  <script>
+    let todos = [];
+    let ctr =0;
+    function addTodo() {
+      todos.push({
+        title: ctr + " . " + document.querySelector("input").value,
+        index:ctr
+      })
+      render(todos[ctr]);
+            ctr++;
+    }
+
+    function deleteTodo(index) {
+      const deleteEl = document.getElementById(`${index}`);
+      if(deleteEl){
+      deleteEl.parentElement.removeChild(deleteEl);
+      }
+      render();
+    }
+ 
+    function render(todo) {
+        const todoBody =document.getElementById("todolist");
+        const divEl = document.createElement("div");
+        const headEl = document.createElement("h4");
+        const buttonEl =  document.createElement("button");
+        divEl.innerHTML=todo.title;
+        divEl.id=`${todo.index}`;
+        buttonEl.innerHTML="Delete"
+        buttonEl.setAttribute("onclick","deleteTodo("+todo.index+")") ;
+        divEl.appendChild(buttonEl);
+        divEl.appendChild(headEl);
+        todoBody.appendChild(divEl);
+      }
+  </script>
+</body> -->
