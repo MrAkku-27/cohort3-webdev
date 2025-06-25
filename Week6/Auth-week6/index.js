@@ -5,6 +5,9 @@ const JWT_SECRET ="idonthaveanysecretbro";
 
 app.use(express.json());
 const users =[];
+app.get("/",function(req,res){
+  res.sendFile(__dirname+'/public/index.html');
+})
 app.post("/signup",function(req,res){
   const username = req.body.username;
   const password = req.body.password;
@@ -24,6 +27,22 @@ app.post("/signup",function(req,res){
   }
 })
 
+function auth(req,res,next){
+  const token = req.headers.token;
+  const usertoken=JWT.verify(token,JWT_SECRET);
+  const username= usertoken.username;
+  const existinguser = users.find(u=>u.username===username);
+  if(existinguser){
+    req.username = existinguser.username;
+    req.password =existinguser.password;
+    next() 
+  }else{
+    res.json({
+      message:"User Doesnt Exist "
+    })
+  }
+  
+}
 
 app.post("/signin",function(req,res){
   const username = req.body.username;
@@ -48,18 +67,13 @@ app.post("/signin",function(req,res){
 })
 
 
-app.get("/me",function(req,res){
-  const token = req.headers.token;
-  const verifytoken = JWT.verify(token,JWT_SECRET);
-  const username = verifytoken.username;
-  const existinguser = users.find(u=>u.username===username)
+app.get("/me",auth,function(req,res){
 
-  if(existinguser){
     res.status(200).json({
-      user :username,
-      password: existinguser.password
+      user :req.username,
+      password: req.password
     })
-  }
+
 
 })
 

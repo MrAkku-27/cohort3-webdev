@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth Demo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.10.0/axios.min.js"></script>
+</head>
+<body>
+<div>
+    <input id="signup-username" type="text">
+    <input id="signup-password" type="password">
+    <button onclick="signup()">Signup</button>
+</div>
+
+<div>
+    <input id="signin-username" type="text">
+    <input id="signin-password" type="password">
+    <button onclick="signin()">Signin</button>
+</div>
+
+<div>
+  User Information:
+<div id="userinfo">
+
+</div>
+</div>
+<button onclick="logout()">Logout</button>
+
+<script>
+async function signup(){
+  const username = document.getElementById("signup-username").value
+  const password = document.getElementById("signup-password").value
+  const response = await axios.post("http://localhost:3000/signup",{
+    username:username,
+    password:password
+  });
+  await alert(response.data.message);
+}
+async function signin(){
+  const username = document.getElementById("signin-username").value
+  const password = document.getElementById("signin-password").value
+  const response = await axios.post("http://localhost:3000/signin",{
+    username:username,
+    password:password
+  });
+  const token = response.data.token;
+  if(token){
+  localStorage.setItem("token",token);
+  alert("signin completed");
+  location.reload();
+  }else{
+    alert("SignIn failed");
+  }
+  
+}
+function logout(){
+  localStorage.removeItem('token');
+  document.getElementById('userinfo').innerHTML = '';
+  location.reload();
+  
+}
+async function getuserinfo() {
+  const token = localStorage.getItem('token');
+  const response = await axios.get("http://localhost:3000/me",
+      {
+      headers:  
+      {
+        token: token
+      }
+
+
+}  );
+
+  if(response.data){
+    const username=response.data.user;
+  const password=response.data.password;
+  const userElement = document.getElementById("userinfo");
+  const divEl = document.createElement("div");
+  divEl.innerHTML= "username: "+username  +"  password: " +password;
+  userElement.appendChild(divEl);
+  
+  }else{
+     const userElement = document.getElementById("userinfo");
+  const divEl = document.createElement("div");
+  divEl.innerHTML= "username: "+"  password: " ;
+  userElement.appendChild(divEl);
+  }
+
+    
+  
+}
+getuserinfo();
+</script>
+</body>
+</html>
