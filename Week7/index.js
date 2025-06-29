@@ -7,7 +7,7 @@ const JWT_SECRET ="ohmaturulub"
 const bcrypt = require('bcrypt');
 const {z} =require('zod');
 app.use(express.json());
-mongoose.connect("mongodb+srv://akthharebrahim:VKZHqgaDwOZXnAGr@cluster0.e2l8dfo.mongodb.net/todo1-cohort3");
+mongoose.connect("MONGODB_URL");
 
 
 
