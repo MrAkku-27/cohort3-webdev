@@ -48,7 +48,7 @@ userRouter.post("/purchase-course/:courseid",async function(req,res){
     user.enrolledCourses.push(courseId);
     await user.save();
 
-    res.status(200).json({ message: "Successfully enrolled in course" });
+    res.status(200).json({ message: `Successfully enrolled in ${course.title} Course` });
   }else{
     res.json({
       message:"Course Not Found"
@@ -78,7 +78,10 @@ if (!user) {
     }
 
     res.json({
-      enrolledCourses: user.enrolledCourses
+      enrolledCourses: user.enrolledCourses.map(x=>({ 
+        title:x.title,
+        description:x.description,
+        price:x.price}))
     });
 
   
